@@ -29,10 +29,15 @@ impl Cpu {
         ];
         let registers = create_memory((register_names.len() * 2) as u16);
 
+        let reg_nam = [
+            "ip","acc",
+            "r0","r1","r2","r3","r4","r5","r6","r7"
+        ];
+
         let mut register_map = HashMap::new();
         for i in 0..register_names.len() {
             register_map.insert(
-                &register_names[i],
+                reg_nam[i].to_string(),
                 (i * 2) as u16
             );
         }
@@ -44,6 +49,20 @@ impl Cpu {
             register_map
         }
     }
+
+    fn get_register(&self, name: String) -> Result<u16, String> {
+        if !self.register_names.contains(&name) {
+            return Err(format!("No register: {}", name))
+        }   
+
+        let idx = match self.register_map.get(&name) {
+            Some(x) => x,
+            None => &(0 as u16)
+        };
+
+        return Ok(self.registers[*idx as usize]);
+    }
+    
 }
 
 fn main() {
