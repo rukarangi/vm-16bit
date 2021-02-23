@@ -1,70 +1,27 @@
-use std::collections::HashMap;
-
-fn create_memory(size: u16) -> Vec<u16> {
-    let buffer: Vec<u16> = Vec::with_capacity(size as usize);
-    return buffer;
-}
-
-struct Cpu {
-    memory: Vec<u16>,
-    register_names: Vec<String>,
-    registers: Vec<u16>,
-    register_map: HashMap<String, u16>
-}
-
-impl Cpu {
-    fn new() -> Cpu {
-        let memory = create_memory(u16::MAX);
-        let register_names = vec![
-            String::from("ip"),
-            String::from("acc"),
-            String::from("r0"),
-            String::from("r1"),
-            String::from("r2"),
-            String::from("r3"),
-            String::from("r4"),
-            String::from("r5"),
-            String::from("r6"),
-            String::from("r7")
-        ];
-        let registers = create_memory((register_names.len() * 2) as u16);
-
-        let reg_nam = [
-            "ip","acc",
-            "r0","r1","r2","r3","r4","r5","r6","r7"
-        ];
-
-        let mut register_map = HashMap::new();
-        for i in 0..register_names.len() {
-            register_map.insert(
-                reg_nam[i].to_string(),
-                (i * 2) as u16
-            );
-        }
-
-        return Cpu {
-            memory,
-            register_names,
-            registers,
-            register_map
-        }
-    }
-
-    fn get_register(&self, name: String) -> Result<u16, String> {
-        if !self.register_names.contains(&name) {
-            return Err(format!("No register: {}", name))
-        }   
-
-        let idx = match self.register_map.get(&name) {
-            Some(x) => x,
-            None => &(0 as u16)
-        };
-
-        return Ok(self.registers[*idx as usize]);
-    }
-    
-}
+mod cpu;
 
 fn main() {
-    println!("Hello, world!");
+    let mut mem1 = cpu::memory::create_memory(u8::MAX);
+
+    mem1[0] = cpu::instructions::MOV_LIT_R1;
+    mem1[1] = 0x12; // 0x1234
+    mem1[2] = 0x34;
+
+    mem1[3] = cpu::instructions::MOV_LIT_R2;
+    mem1[4] = 0xAB; // 0xABCD
+    mem1[5] = 0xCD;
+
+    mem1[6] = cpu::instructions::ADD_REG_REG;
+    mem1[7] = 0x03; // r1 index
+    mem1[8] = 0x04; // r2 index
+
+    let mut cpu = cpu::Cpu::new(1 as u8);
+
+    cpu.insert(mem1);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    
+    cpu.debug();
 }
