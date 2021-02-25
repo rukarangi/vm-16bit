@@ -12,51 +12,36 @@ fn main() {
 
     let mut i: usize = 0;
 
-    mem1[i] = cpu::instructions::MOV_MEM_REG; //13
-    i += 1;
-    mem1[i] = 0x01; // 0x0100 mem
-    i += 1;
-    mem1[i] = 0x00;
-    i += 1;
-    mem1[i] = R1;
-    i += 1;
+    let mut temp_instr = Vec::<u8>::new();
+    temp_instr.push(cpu::instructions::MOV_MEM_REG); //13
+    temp_instr.push(0x01); // 0x0100 mem
+    temp_instr.push(0x00);
+    temp_instr.push(R1);
 
-    mem1[i] = cpu::instructions::MOV_LIT_REG; //10
-    i += 1;
-    mem1[i] = 0x00; // 0x0001
-    i += 1;
-    mem1[i] = 0x01;
-    i += 1;
-    mem1[i] = R2;
-    i += 1;
+    temp_instr.push(cpu::instructions::MOV_LIT_REG); //10
+    temp_instr.push(0x00); // 0x0001
+    temp_instr.push(0x01);
+    temp_instr.push(R2);
 
-    mem1[i] = cpu::instructions::ADD_REG_REG; //14
-    i += 1;
-    mem1[i] = R1;
-    i += 1;
-    mem1[i] = R2;
-    i += 1;
+    temp_instr.push(cpu::instructions::ADD_REG_REG); //14
+    temp_instr.push(R1);
+    temp_instr.push(R2);
 
-    mem1[i] = cpu::instructions::MOV_REG_MEM; //12
-    i += 1;
-    mem1[i] = ACC;
-    i += 1;
-    mem1[i] = 0x01; // 0x0100 mem
-    i += 1;
-    mem1[i] = 0x00;
-    i += 1;
+    temp_instr.push(cpu::instructions::MOV_REG_MEM); //12
+    temp_instr.push(ACC);
+    temp_instr.push(0x01); // 0x0100 mem
+    temp_instr.push(0x00);
 
-    mem1[i] = cpu::instructions::JNE_LIT_ADR; //15
-    i += 1;
-    mem1[i] = 0x00; // 0x0003
-    i += 1;
-    mem1[i] = 0x03;
-    i += 1;
-    mem1[i] = 0x00; // 0x0000 mem start
-    i += 1;
-    mem1[i] = 0x00;
-    i += 1;
-    mem1[i] = 0xFE;
+    temp_instr.push(cpu::instructions::JNE_LIT_ADR); //15
+    temp_instr.push(0x00); // 0x0003
+    temp_instr.push(0x03);
+    temp_instr.push(0x00); // 0x0000 mem start
+    temp_instr.push(0x00);
+    temp_instr.push(0xFE);
+
+    for (i, b) in temp_instr.iter().enumerate() {
+        mem1[i] = *b;
+    }
 
 
     let mut cpu = cpu::Cpu::new(1 as u16);

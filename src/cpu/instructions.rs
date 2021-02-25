@@ -4,4 +4,7 @@ pub const MOV_REG_MEM: u8 = 0x12;
 pub const MOV_MEM_REG: u8 = 0x13;
 pub const ADD_REG_REG: u8 = 0x14;
 pub const JNE_LIT_ADR: u8 = 0x15;
+pub const PSH_LIT: u8     = 0x17;
+pub const PSH_REG: u8     = 0x18;
+pub const POP: u8         = 0x1A;    
 //pub const MOVE_R1 = 0x10;
